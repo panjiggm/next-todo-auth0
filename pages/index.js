@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import { getSession, useUser } from "@auth0/nextjs-auth0";
 
@@ -12,9 +12,37 @@ export default function Home({ initialTodos }) {
   const { todos, setTodos } = useContext(TodosContext);
   const { user, isLoading } = useUser();
 
+  const [image, setImage] = useState("");
+
   useEffect(() => {
     setTodos(initialTodos);
   }, []);
+
+  const handleChangeUpload = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!image) {
+      return;
+    }
+    console.log("IMG", image);
+
+    const formData = new FormData();
+    formData.append("image", image);
+
+    try {
+      const res = await fetch("/api/uploadImage", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      console.log("Data Res", data);
+    } catch (error) {
+      console.log("Error Post", error);
+    }
+  };
 
   return (
     <div>
@@ -25,6 +53,21 @@ export default function Home({ initialTodos }) {
       </Head>
       <Navbar />
       <main>
+        <div className="m-3">
+          <div className="flex items-center">
+            <h3>Upload image</h3>
+            <button
+              className="bg-green-600 text-white py-1 px-4 rounded-lg hover:bg-green-500"
+              onClick={handleUpload}>
+              Upload
+            </button>
+          </div>
+          <input
+            type="file"
+            accept=".jpg, .png, .jpeg"
+            onChange={handleChangeUpload}
+          />
+        </div>
         <h1 className="text-2xl text-center mb-4">My Todos</h1>
         {user ? (
           <>

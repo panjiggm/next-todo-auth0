@@ -67,6 +67,13 @@ const TodosProvider = ({ children }) => {
     }
   };
 
+  const uploadImage = async (dataUpload) => {
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <TodosContext.Provider
       value={{
@@ -76,6 +83,7 @@ const TodosProvider = ({ children }) => {
         updateTodo,
         deleteTodo,
         addTodo,
+        uploadImage,
       }}>
       {children}
     </TodosContext.Provider>
